@@ -24,11 +24,11 @@ import {
 
 // ── Данные ─────────────────────────────────────────────────────────────────
 const heroImages = [
-  { src: "/hero-lesnoe.webp", alt: "Бунгало Лесное — белый домик в лесу, село Высокое, пер. Тельмана 5" },
-  { src: "/hero-2.webp", alt: "Светлая гостиная с видом на лес" },
-  { src: "/hero-3.webp", alt: "Терраса и зона отдыха на природе" },
-  { src: "/hero-4.webp", alt: "Уютная спальня бунгало" },
-  { src: "/hero-5.webp", alt: "Вид сверху на комплекс в окружении леса" },
+  { src: "./hero-lesnoe.webp", alt: "Бунгало Лесное — белый домик в лесу, село Высокое, пер. Тельмана 5" },
+  { src: "./hero-2.webp", alt: "Светлая гостиная с видом на лес" },
+  { src: "./hero-3.webp", alt: "Терраса и зона отдыха на природе" },
+  { src: "./hero-4.webp", alt: "Уютная спальня бунгало" },
+  { src: "./hero-5.webp", alt: "Вид сверху на комплекс в окружении леса" },
 ];
 
 const amenities = [
@@ -47,26 +47,26 @@ const amenities = [
 ];
 
 const row1 = [
-  "/hero-lesnoe.webp",
-  "/hero-2.webp",
-  "/hero-3.webp",
-  "/hero-4.webp",
-  "/hero-5.webp",
-  "/gallery-1.webp",
-  "/gallery-2.webp",
-  "/gallery-3.webp",
-  "/gallery-4.webp",
+  "./hero-lesnoe.webp",
+  "./hero-2.webp",
+  "./hero-3.webp",
+  "./hero-4.webp",
+  "./hero-5.webp",
+  "./gallery-1.webp",
+  "./gallery-2.webp",
+  "./gallery-3.webp",
+  "./gallery-4.webp",
 ];
 
 const row2 = [
-  "/house-1.webp",
-  "/house-2.webp",
-  "/house-3.webp",
-  "/house-4.webp",
-  "/gallery-5.webp",
-  "/gallery-6.webp",
-  "/gallery-7.webp",
-  "/gallery-8.webp",
+  "./house-1.webp",
+  "./house-2.webp",
+  "./house-3.webp",
+  "./house-4.webp",
+  "./gallery-5.webp",
+  "./gallery-6.webp",
+  "./gallery-7.webp",
+  "./gallery-8.webp",
 ];
 
 const reviews = [
@@ -443,16 +443,16 @@ export default function App() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-xl overflow-hidden h-56">
-              <img src="/house-1.webp" alt="Вид из окна бунгало на лес" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              <img src="./house-1.webp" alt="Вид из окна бунгало на лес" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
             </div>
             <div className="rounded-xl overflow-hidden h-56">
-              <img src="/house-2.webp" alt="Камин в гостиной" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              <img src="./house-2.webp" alt="Камин в гостиной" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
             </div>
             <div className="rounded-xl overflow-hidden h-56">
-              <img src="/house-3.webp" alt="Кухня с плитой и посудой" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              <img src="./house-3.webp" alt="Кухня с плитой и посудой" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
             </div>
             <div className="rounded-xl overflow-hidden h-56">
-              <img src="/house-4.webp" alt="Терраса со столом на открытом воздухе" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              <img src="./house-4.webp" alt="Терраса со столом на открытом воздухе" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
             </div>
           </div>
         </div>
