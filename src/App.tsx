@@ -1,291 +1,274 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Waves,
-  Droplets,
-  Wifi,
-  UtensilsCrossed,
-  PawPrint,
-  Star,
+  ArrowRight,
+  Zap,
+  Shield,
+  Globe,
+  BarChart3,
+  Layers,
+  Sparkles,
   Menu,
   X,
-  Instagram,
-  Umbrella,
-  Car,
-  Wind,
-  WashingMachine,
-  Baby,
-  MapPin,
-  Phone,
-  Clock,
-  CreditCard,
-  TreePine,
+  Check,
+  ChevronRight,
+  Terminal,
+  Lock,
+  Cpu,
+  MoveRight,
+  Star,
 } from "lucide-react";
 
-// ── Данные ─────────────────────────────────────────────────────────────────
-const heroImages = [
-  { src: "./hero-lesnoe.webp", alt: "Бунгало Лесное — белый домик в лесу, село Высокое, пер. Тельмана 5" },
-  { src: "./hero-2.webp", alt: "Светлая гостиная с видом на лес" },
-  { src: "./hero-3.webp", alt: "Терраса и зона отдыха на природе" },
-  { src: "./hero-4.webp", alt: "Уютная спальня бунгало" },
-  { src: "./hero-5.webp", alt: "Вид сверху на комплекс в окружении леса" },
+const nav = [
+  { label: "Features", href: "#features" },
+  { label: "How it works", href: "#how" },
+  { label: "Pricing", href: "#pricing" },
+  { label: "FAQ", href: "#faq" },
 ];
 
-const amenities = [
-  { icon: Waves, label: "Пляж — мелкая галька", description: "Пляжные полотенца, зонты и шезлонги — бесплатно. Пляжной линии нет, тип пляжа — мелкая галька." },
-  { icon: Umbrella, label: "Терраса и пикник", description: "Терраса, площадка для пикника и мангальная зона — бесплатно. Проведение праздников." },
-  { icon: Wind, label: "Комфорт в номере", description: "Кондиционер, санузел, холодильник, москитные сетки, диван-кровать, номера для некурящих." },
-  { icon: WashingMachine, label: "Бытовая техника", description: "Стиральная машина, утюг, уборка 2500 ₽. Отопление и винградник на территории." },
-  { icon: UtensilsCrossed, label: "Кухня", description: "Плита, чайник, микроволновка, посуда. Питание — без питания, готовите сами." },
-  { icon: Droplets, label: "Джакузи и душ", description: "Джакузи, душ, санузел в номере. Сауна — нет, бассейнов — 0, но есть детский бассейн." },
-  { icon: Baby, label: "Для семей с детьми", description: "Детская площадка, детский бассейн, стульчик, детские ТВ-каналы. Заселение с детьми — да." },
-  { icon: Wifi, label: "Wi-Fi везде", description: "Высокоскоростной интернет (широкополосный) на всей территории отеля — бесплатно." },
-  { icon: Car, label: "Парковка", description: "Открытая бесплатная парковка по предварительному бронированию." },
-  { icon: PawPrint, label: "Можно с питомцами", description: "Платно, до 5 кг. Кошки, собаки и другие животные. Можно с собакой." },
-  { icon: CreditCard, label: "Оплата картой", description: "Оплата картой, предзапись. Депозит 6000 ₽ обязательно. Трансфер — нет." },
-  { icon: TreePine, label: "Сад и виноградник", description: "Сад, виноградник, место для хранения лыж. Тихое лесное место, круглосуточно." },
-];
-
-const row1 = [
-  "./hero-lesnoe.webp",
-  "./hero-2.webp",
-  "./hero-3.webp",
-  "./hero-4.webp",
-  "./hero-5.webp",
-  "./gallery-1.webp",
-  "./gallery-2.webp",
-  "./gallery-3.webp",
-  "./gallery-4.webp",
-];
-
-const row2 = [
-  "./house-1.webp",
-  "./house-2.webp",
-  "./house-3.webp",
-  "./house-4.webp",
-  "./gallery-5.webp",
-  "./gallery-6.webp",
-  "./gallery-7.webp",
-  "./gallery-8.webp",
-];
-
-const reviews = [
+const bentoFeatures = [
   {
-    stars: 5,
-    quote:
-      "Бронировали на день рождения — всё было идеально. Домик ещё уютнее, чем на фото, утром свет в лесу просто волшебный. Мангал и терраса — супер, места хватило всем девятерым. Уже смотрим даты на следующий год.",
-    reviewer: "Семья Морозовых",
-    date: "Август",
-    context: "День рождения, 9 гостей",
+    title: "Lightning Fast",
+    desc: "Built on edge infrastructure. Sub-50ms response times globally.",
+    icon: Zap,
+    span: "col-span-1 row-span-1 md:col-span-2 md:row-span-2",
+    accent: "from-violet-500/10 to-transparent",
   },
   {
-    stars: 5,
-    quote:
-      "Были во многих гостевых домах, но этот — лучший. Кровати очень удобные, спали прекрасно. Кухня полностью оборудована, вид из окна успокаивает. Уезжать совсем не хотелось.",
-    reviewer: "Ирина и Алексей",
-    date: "Сентябрь",
-    context: "Годовщина",
+    title: "Enterprise Security",
+    desc: "SOC 2 Type II. End-to-end encryption. Zero-knowledge architecture.",
+    icon: Shield,
+    span: "col-span-1 row-span-1",
+    accent: "from-emerald-500/10 to-transparent",
   },
   {
-    stars: 5,
-    quote:
-      "Приезжали с собакой (до 5 кг, доплата) — хозяева оставили миски, пелёнки и подсказали пляж, где можно с питомцем. Прогулка по лесу от калитки — восторг. Рекомендуем всем, кто любит природу.",
-    reviewer: "Семья Келлер",
-    date: "Октябрь",
-    context: "Отдых с питомцем",
+    title: "Global CDN",
+    desc: "200+ edge locations. 99.99% uptime guaranteed.",
+    icon: Globe,
+    span: "col-span-1 row-span-1",
+    accent: "from-amber-500/10 to-transparent",
+  },
+  {
+    title: "Real-time Analytics",
+    desc: "Track every metric that matters. Custom dashboards in seconds.",
+    icon: BarChart3,
+    span: "col-span-1 row-span-1 md:col-span-2",
+    accent: "from-blue-500/10 to-transparent",
+  },
+  {
+    title: "Modular Architecture",
+    desc: "Compose your stack from independent modules. Ship features independently.",
+    icon: Layers,
+    span: "col-span-1 row-span-1",
+    accent: "from-rose-500/10 to-transparent",
+  },
+  {
+    title: "AI-Powered",
+    desc: "Smart suggestions, automated workflows, and predictive scaling.",
+    icon: Sparkles,
+    span: "col-span-1 row-span-1 md:col-span-2 md:row-span-2",
+    accent: "from-purple-500/10 to-transparent",
   },
 ];
 
-// ── Компонент ───────────────────────────────────────────────────────────────
+const steps = [
+  {
+    num: "01",
+    title: "Connect",
+    desc: "Add your existing tools and data sources in minutes. We support 200+ integrations out of the box.",
+    icon: Terminal,
+  },
+  {
+    num: "02",
+    title: "Configure",
+    desc: "Define your workflows with our visual builder. No code required, but infinitely extensible.",
+    icon: Cpu,
+  },
+  {
+    num: "03",
+    title: "Deploy",
+    desc: "Push to production with one click. Automatic rollbacks, canary deployments, and zero-downtime updates.",
+    icon: Lock,
+  },
+];
+
+const plans = [
+  {
+    name: "Starter",
+    price: "$0",
+    period: "/month",
+    desc: "For individuals and small projects.",
+    features: ["5 projects", "10K requests/mo", "1 GB storage", "Community support", "Basic analytics"],
+    cta: "Get started free",
+    highlighted: false,
+  },
+  {
+    name: "Pro",
+    price: "$29",
+    period: "/month",
+    desc: "For growing teams and businesses.",
+    features: [
+      "Unlimited projects",
+      "1M requests/mo",
+      "100 GB storage",
+      "Priority support",
+      "Advanced analytics",
+      "Custom domains",
+      "Team collaboration",
+    ],
+    cta: "Start free trial",
+    highlighted: true,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    period: "",
+    desc: "For large organizations with custom needs.",
+    features: [
+      "Everything in Pro",
+      "Unlimited requests",
+      "Dedicated infrastructure",
+      "SLA guarantee",
+      "Dedicated account manager",
+      "SSO & SAML",
+      "Custom contracts",
+    ],
+    cta: "Contact sales",
+    highlighted: false,
+  },
+];
+
+const faq = [
+  {
+    q: "How does the free tier work?",
+    a: "The Starter plan is completely free with no time limit. You get access to all core features with usage limits. Upgrade anytime as your needs grow.",
+  },
+  {
+    q: "Can I migrate from my current provider?",
+    a: "Yes. We provide one-click migration tools for all major platforms. Most migrations complete in under 30 minutes with zero downtime.",
+  },
+  {
+    q: "What kind of support do you offer?",
+    a: "Starter plans get community support. Pro plans include email support with 24-hour response. Enterprise plans get 24/7 dedicated support with a named account manager.",
+  },
+  {
+    q: "Is there a long-term contract?",
+    a: "No contracts. All plans are month-to-month and can be cancelled anytime. Annual plans are available at a 20% discount.",
+  },
+  {
+    q: "How does billing work for usage overages?",
+    a: "We'll notify you when you approach your plan limits. Overage is billed at competitive per-unit rates with no hidden fees.",
+  },
+];
+
+const testimonials = [
+  {
+    quote: "We migrated our entire stack in a weekend. Performance improved 4x and our infrastructure costs dropped by 60%.",
+    author: "Sarah Chen",
+    role: "CTO, Vercel",
+  },
+  {
+    quote: "The developer experience is unmatched. It feels like the team built this specifically for how we work.",
+    author: "Marcus Rodriguez",
+    role: "Lead Engineer, Linear",
+  },
+  {
+    quote: "We went from idea to production in 48 hours. The speed and simplicity are genuinely game-changing.",
+    author: "Aisha Patel",
+    role: "Founder, Resend",
+  },
+];
+
+const ease = [0.25, 0.1, 0.25, 1] as const;
+
 export default function App() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
-  const [enquirySent, setEnquirySent] = useState(false);
-
-  const [checkIn, setCheckIn] = useState("");
-  const [checkOut, setCheckOut] = useState("");
-  const [guests, setGuests] = useState("2");
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % 5);
-    }, 4000);
-    return () => clearInterval(interval);
+    const h = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
   }, []);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 4000);
-    return () => clearTimeout(t);
-  }, [toast]);
-
-  const marqueeRef = useRef<HTMLElement>(null);
-  const [marqueeOffset, setMarqueeOffset] = useState(0);
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const el = marqueeRef.current;
-        if (!el) {
-          ticking = false;
-          return;
-        }
-        const sectionTop = el.getBoundingClientRect().top + window.scrollY;
-        const offset = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
-        setMarqueeOffset(offset);
-        ticking = false;
-      });
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleCheckAvailability = () => {
-    if (!checkIn || !checkOut) {
-      setToast("Пожалуйста, выберите даты заезда и выезда.");
-      return;
-    }
-    const data = { "Заезд": checkIn, "Выезд": checkOut, "Гостей": guests, "Источник": "Виджет на главном экране" };
-    sendToEmail(data, `Лесное — проверка дат ${checkIn} → ${checkOut}`);
-    setToast(`Проверяем наличие на ${guests} гост. — ${checkIn} → ${checkOut}. Заявка отправлена на maksonfantank@gmail.com`);
-  };
-
-  const sendToEmail = async (data: Record<string, string>, subject: string) => {
-    try {
-      await fetch("https://formsubmit.co/ajax/maksonfantank@gmail.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ ...data, _subject: subject, _captcha: "false" }),
-      });
-    } catch (err) {
-      console.error("Email send failed", err);
-    }
-    // Fallback mailto (не блокирует, открывается по желанию пользователя)
-    const body = encodeURIComponent(Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n"));
-    const mailto = `mailto:maksonfantank@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
-    // не открываем автоматически, только логируем для отладки
-    console.log("Mailto fallback:", mailto);
-  };
-
-  const handleEnquirySubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const fd = new FormData(form);
-    const data: Record<string, string> = {};
-    fd.forEach((v, k) => (data[k] = String(v)));
-    // добавим также состояние виджета если совпадает
-    data["Источник"] = "Форма заявки Лесное";
-    await sendToEmail(data, `Лесное — новая заявка от ${data["Имя"] || data["name"] || "гостя"}`);
-    setEnquirySent(true);
-    setToast("Спасибо! Ваша заявка отправлена на maksonfantank@gmail.com. Ответим в течение 24 часов.");
-    setTimeout(() => setEnquirySent(false), 5000);
-    form.reset();
-  };
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      {/* ── НАВБАР ───────────────────────────────────────────────────────── */}
+    <div className="min-h-screen bg-[#fafafa] text-[#111] font-sans selection:bg-[#111] selection:text-white">
+      {/* ── NAV ───────────────────────────────────────────────────── */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled ? "bg-white shadow-sm border-b border-[hsl(var(--border))]" : "bg-transparent"
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
+          scrolled ? "bg-white/80 backdrop-blur-xl border-b border-black/5" : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <a
-            href="#"
-            className={`font-[Cormorant_Garamond] font-bold italic text-2xl tracking-wide transition-colors duration-500 ${
-              scrolled ? "text-[hsl(var(--foreground))]" : "text-white"
-            }`}
-          >
-            ЛЕСНОЕ
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-[#111] rounded-lg flex items-center justify-center">
+              <Zap className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-base tracking-tight">Vortex</span>
           </a>
 
           <div className="hidden md:flex items-center gap-8">
-            {[
-              { label: "О доме", href: "#house" },
-              { label: "Удобства", href: "#amenities" },
-              { label: "Галерея", href: "#gallery" },
-              { label: "Как добраться", href: "#location" },
-              { label: "Цены", href: "#rates" },
-            ].map((link) => (
+            {nav.map((l) => (
               <a
-                key={link.label}
-                href={link.href}
-                className={`font-[Jost] font-normal text-sm tracking-wider transition-colors duration-300 ${
-                  scrolled ? "text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]" : "text-white/80 hover:text-white"
-                }`}
+                key={l.label}
+                href={l.href}
+                className="text-[13px] text-neutral-500 hover:text-[#111] transition-colors duration-200"
               >
-                {link.label}
+                {l.label}
               </a>
             ))}
           </div>
 
           <div className="flex items-center gap-3">
             <a
-              href="#enquiry"
-              className={`hidden sm:inline-flex font-[Jost] font-normal text-sm rounded-full px-5 py-2 transition-all duration-300 ${
-                scrolled
-                  ? "bg-[hsl(var(--primary))] text-white border border-transparent hover:opacity-90"
-                  : "border border-white text-white bg-transparent hover:bg-white hover:text-[hsl(var(--foreground))]"
-              }`}
+              href="#pricing"
+              className="hidden md:inline-flex text-[13px] text-neutral-500 hover:text-[#111] transition-colors"
             >
-              Проверить даты
+              Log in
+            </a>
+            <a
+              href="#pricing"
+              className="hidden md:inline-flex text-[13px] bg-[#111] text-white px-4 py-2 rounded-full hover:bg-black/80 transition-colors duration-200"
+            >
+              Get started
             </a>
             <button
-              onClick={() => setNavOpen(!navOpen)}
-              className={`md:hidden p-2 rounded-full transition-colors ${scrolled ? "text-[hsl(var(--foreground))]" : "text-white"}`}
-              aria-label="Меню"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2"
+              aria-label="Menu"
             >
-              {navOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
         <AnimatePresence>
-          {navOpen && (
+          {mobileOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="md:hidden bg-white border-t border-[hsl(var(--border))] overflow-hidden"
+              className="md:hidden bg-white border-t border-black/5 overflow-hidden"
             >
               <div className="px-6 py-6 flex flex-col gap-4">
-                {[
-                  { label: "О доме", href: "#house" },
-                  { label: "Удобства", href: "#amenities" },
-                  { label: "Галерея", href: "#gallery" },
-                  { label: "Как добраться", href: "#location" },
-                  { label: "Цены", href: "#rates" },
-                  { label: "Отзывы", href: "#reviews" },
-                  { label: "Заявка", href: "#enquiry" },
-                ].map((link) => (
+                {nav.map((l) => (
                   <a
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setNavOpen(false)}
-                    className="font-[Jost] font-light text-base text-[hsl(var(--foreground))] py-2 border-b border-[hsl(var(--border))] last:border-0"
+                    key={l.label}
+                    href={l.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-sm text-neutral-600 py-2 border-b border-black/5 last:border-0"
                   >
-                    {link.label}
+                    {l.label}
                   </a>
                 ))}
                 <a
-                  href="#enquiry"
-                  onClick={() => setNavOpen(false)}
-                  className="mt-2 bg-[hsl(var(--primary))] text-white font-[Jost] font-normal text-sm px-6 py-3 rounded-full text-center"
+                  href="#pricing"
+                  onClick={() => setMobileOpen(false)}
+                  className="bg-[#111] text-white text-sm px-6 py-3 rounded-full text-center mt-2"
                 >
-                  Проверить даты
+                  Get started
                 </a>
               </div>
             </motion.div>
@@ -293,386 +276,254 @@ export default function App() {
         </AnimatePresence>
       </nav>
 
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative h-[100dvh] overflow-hidden">
-        {heroImages.map((img, i) => (
-          <div
-            key={i}
-            className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-            style={{ opacity: activeIndex === i ? 1 : 0 }}
-          >
-            <img src={img.src} alt={img.alt} className="w-full h-full object-cover" loading={i === 0 ? "eager" : "lazy"} />
-          </div>
-        ))}
-
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,0,0,0.40)] via-[rgba(0,0,0,0.05)] to-[rgba(0,0,0,0.60)] z-10" />
-
-        <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-16 sm:pb-28 px-4 sm:px-6 text-center text-white">
+      {/* ── HERO ──────────────────────────────────────────────────── */}
+      <section className="relative pt-32 pb-20 md:pt-44 md:pb-32 px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.15),transparent)]" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-black/15 backdrop-blur-md border border-white/10 rounded-3xl px-5 sm:px-8 py-5 sm:py-7 mb-5 sm:mb-8 max-w-3xl"
+            transition={{ duration: 0.6, ease }}
           >
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="font-[Jost] font-light text-[10px] sm:text-xs tracking-[0.35em] uppercase text-white/70 mb-3 sm:mb-4"
-            >
-              ПЕР. ТЕЛЬМАНА, 5 • СЕЛО ВЫСОКОЕ • СОЧИ
-            </motion.p>
-
-            <motion.h1
-              initial={{ opacity: 0, filter: "blur(16px)" }}
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              transition={{ duration: 1.2, delay: 0.5 }}
-              className="font-[Cormorant_Garamond] font-bold italic text-white leading-tight text-[44px] sm:text-[52px] md:text-[64px] lg:text-[80px] mb-3"
-            >
-              Где время замирает.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1 }}
-              className="font-[Jost] font-light text-sm sm:text-lg text-white/80 max-w-xl leading-relaxed mx-auto"
-            >
-              Уютные бунгало в лесу для тех, кто ценит тишину и природу. Пять номеров, своя кухня, мангал и свежий воздух. Приезжайте. Вдыхайте. Оставайтесь подольше.
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.1 }}
-            className="bg-white/10 backdrop-blur-md border border-white/25 rounded-2xl px-4 sm:px-8 py-4 sm:py-6 w-full max-w-3xl"
-          >
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 sm:gap-6 items-end">
-              <div className="flex flex-col gap-1 text-left">
-                <label className="font-[Jost] font-light text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-white/60">ЗАЕЗД</label>
-                <input
-                  type="date"
-                  value={checkIn}
-                  onChange={(e) => setCheckIn(e.target.value)}
-                  className="bg-transparent border-b border-white/40 text-white font-[Jost] text-xs sm:text-sm py-1 focus:outline-none focus:border-white cursor-pointer w-full [color-scheme:dark]"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1 text-left">
-                <label className="font-[Jost] font-light text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-white/60">ВЫЕЗД</label>
-                <input
-                  type="date"
-                  value={checkOut}
-                  onChange={(e) => setCheckOut(e.target.value)}
-                  className="bg-transparent border-b border-white/40 text-white font-[Jost] text-xs sm:text-sm py-1 focus:outline-none focus:border-white cursor-pointer w-full [color-scheme:dark]"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1 text-left">
-                <label className="font-[Jost] font-light text-[9px] sm:text-[10px] tracking-[0.25em] uppercase text-white/60">ГОСТЕЙ</label>
-                <select
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="bg-transparent border-b border-white/40 text-white font-[Jost] text-xs sm:text-sm py-1 focus:outline-none focus:border-white cursor-pointer w-full appearance-none"
-                >
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                    <option key={n} value={String(n)} className="text-[hsl(var(--foreground))]">
-                      {n} {n === 1 ? "гость" : "гостей"}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button
-                onClick={handleCheckAvailability}
-                className="col-span-3 sm:col-span-1 bg-white text-[hsl(var(--foreground))] font-[Jost] font-normal text-xs sm:text-sm px-4 sm:px-6 py-2.5 rounded-full hover:bg-[hsl(var(--accent))] transition-colors duration-300 whitespace-nowrap"
-              >
-                Проверить наличие
-              </button>
+            <div className="inline-flex items-center gap-2 bg-white border border-black/8 rounded-full px-4 py-1.5 mb-8 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[12px] text-neutral-500 font-medium">Now in public beta — v2.0</span>
             </div>
           </motion.div>
-        </div>
 
-        <div className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <button
-              key={i}
-              onClick={() => setActiveIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${activeIndex === i ? "bg-white scale-125" : "bg-white/40"}`}
-              aria-label={`Слайд ${i + 1}`}
-            />
-          ))}
-        </div>
-      </section>
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease }}
+            className="text-[clamp(2.5rem,6vw,5rem)] font-semibold leading-[1.05] tracking-[-0.03em] mb-6"
+          >
+            Build faster.
+            <br />
+            <span className="text-neutral-400">Ship with confidence.</span>
+          </motion.h1>
 
-      {/* ── О КОМПЛЕКСЕ ─────────────────────────────────────────────────── */}
-      <section id="house" className="py-16 sm:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-center">
-          <div>
-            <p className="font-[Jost] font-light text-[10px] sm:text-xs tracking-[0.3em] uppercase text-[hsl(var(--muted-foreground))] mb-3 sm:mb-4">О КОМПЛЕКСЕ</p>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="font-[Cormorant_Garamond] font-bold italic text-[38px] sm:text-[52px] text-[hsl(var(--foreground))] leading-tight mb-4 sm:mb-6"
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25, ease }}
+            className="text-neutral-500 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed"
+          >
+            The modern infrastructure platform for teams who demand performance, reliability, and developer experience at every layer.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.4, ease }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3"
+          >
+            <a
+              href="#pricing"
+              className="inline-flex items-center gap-2 bg-[#111] text-white text-sm font-medium px-6 py-3 rounded-full hover:bg-black/80 transition-all duration-200 hover:shadow-lg hover:shadow-black/10"
             >
-              Дом в лесу для всей семьи.
-            </motion.h2>
-            <p className="font-[Jost] font-light text-sm sm:text-base leading-relaxed text-[hsl(var(--muted-foreground))] mb-4 sm:mb-6">
-              «Лесное» — гостевой дом и бунгало в селе Высокое, пер. Тельмана, 5. Построен в 2013 году, реконструкция в 2021. Всего 5 номеров — тихо, уютно и без толп. На территории — сад, виноградник, терраса и мангальная зона. В номерах — кондиционер, санузел, холодильник, стиралка и утюг.
-            </p>
-            <p className="font-[Jost] font-light text-sm sm:text-base leading-relaxed text-[hsl(var(--muted-foreground))] mb-6 sm:mb-8">
-              Питание — без питания, но в каждом номере есть кухня: плита, чайник, микроволновка и посуда. Работаем <b>круглосуточно</b>, заезд в 14:00, выезд в 12:00. Можно с детьми и с питомцами до 5 кг (платно). Интернет — Wi-Fi на всей территории.
-            </p>
-            <div className="grid grid-cols-3 gap-y-4 sm:gap-y-6 gap-x-3 sm:gap-x-4 border-t border-[hsl(var(--border))] pt-6 sm:pt-8">
-              {[
-                { number: "5", label: "Номеров" },
-                { number: "2013", label: "Постройка" },
-                { number: "2021", label: "Реконструкция" },
-                { number: "6000 ₽", label: "Депозит" },
-                { number: "2500 ₽", label: "Уборка" },
-                { number: "5 ночей", label: "Мин. бронь" },
-              ].map((stat) => (
-                <div key={stat.label} className="flex flex-col">
-                  <span className="font-[Cormorant_Garamond] font-bold italic text-3xl max-sm:text-2xl text-[hsl(var(--primary))] leading-none">{stat.number}</span>
-                  <span className="font-[Jost] font-light text-sm text-[hsl(var(--muted-foreground))] mt-1">{stat.label}</span>
+              Start building
+              <ArrowRight className="w-4 h-4" />
+            </a>
+            <a
+              href="#how"
+              className="inline-flex items-center gap-2 bg-white text-[#111] text-sm font-medium px-6 py-3 rounded-full border border-black/10 hover:border-black/20 transition-all duration-200"
+            >
+              See how it works
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Dashboard preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 60 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.6, ease }}
+          className="max-w-5xl mx-auto mt-20 relative z-10"
+        >
+          <div className="rounded-2xl border border-black/8 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.06)] overflow-hidden">
+            <div className="border-b border-black/5 px-4 py-3 flex items-center gap-2">
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-400/60" />
+                <div className="w-3 h-3 rounded-full bg-amber-400/60" />
+                <div className="w-3 h-3 rounded-full bg-green-400/60" />
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="bg-black/5 rounded-md px-3 py-1 text-[11px] text-neutral-400 font-mono">
+                  app.vortex.dev/dashboard
                 </div>
-              ))}
+              </div>
+            </div>
+            <div className="p-6 md:p-10">
+              <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
+                {[
+                  { label: "Requests", value: "2.4M", change: "+12%" },
+                  { label: "Latency", value: "23ms", change: "-8%" },
+                  { label: "Uptime", value: "99.99%", change: "+0.01%" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-neutral-50 rounded-xl p-3 md:p-4">
+                    <p className="text-[11px] text-neutral-400 mb-1">{s.label}</p>
+                    <p className="text-lg md:text-2xl font-semibold tracking-tight">{s.value}</p>
+                    <p className="text-[11px] text-emerald-600 mt-0.5">{s.change}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-neutral-50 rounded-xl p-4 md:p-6 h-32 md:h-44 flex items-end gap-[3px]">
+                {[40, 55, 35, 65, 50, 70, 45, 80, 60, 75, 55, 85, 70, 90, 65, 95, 75, 88, 80, 92, 85, 97, 90, 88].map(
+                  (h, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 bg-[#111]/[0.08] rounded-sm hover:bg-[#111]/20 transition-colors"
+                      style={{ height: `${h}%` }}
+                    />
+                  )
+                )}
+              </div>
             </div>
           </div>
+        </motion.div>
+      </section>
 
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div className="rounded-xl overflow-hidden h-36 sm:h-44 md:h-56">
-              <img src="./house-1.webp" alt="Вид из окна бунгало на лес" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
-            </div>
-            <div className="rounded-xl overflow-hidden h-36 sm:h-44 md:h-56">
-              <img src="./house-2.webp" alt="Камин в гостиной" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
-            </div>
-            <div className="rounded-xl overflow-hidden h-36 sm:h-44 md:h-56">
-              <img src="./house-3.webp" alt="Кухня с плитой и посудой" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
-            </div>
-            <div className="rounded-xl overflow-hidden h-36 sm:h-44 md:h-56">
-              <img src="./house-4.webp" alt="Терраса со столом на открытом воздухе" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
-            </div>
+      {/* ── LOGOS ──────────────────────────────────────────────────── */}
+      <section className="py-12 border-y border-black/5 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="text-center text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-8">
+            Trusted by forward-thinking teams
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6">
+            {["Vercel", "Linear", "Resend", "Supabase", "PlanetScale", "Railway"].map((name) => (
+              <span key={name} className="text-xl md:text-2xl font-semibold text-neutral-200 tracking-tight select-none">
+                {name}
+              </span>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── УДОБСТВА ─────────────────────────────────────────────────────── */}
-      <section id="amenities" className="py-16 sm:py-24 bg-[hsl(var(--muted))]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <motion.h2
+      {/* ── BENTO FEATURES ────────────────────────────────────────── */}
+      <section id="features" className="py-20 md:py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="font-[Cormorant_Garamond] font-bold italic text-[36px] sm:text-[48px] text-[hsl(var(--foreground))] leading-tight text-center mb-3 sm:mb-4"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-14 md:mb-20"
           >
-            Всё включено.
-          </motion.h2>
-          <p className="font-[Jost] font-light text-center text-[hsl(var(--muted-foreground))] mb-8 sm:mb-14 text-sm sm:text-base">
-            Ничего не нужно везти — всё уже на месте. Просто отдыхайте.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            {amenities.map((amenity, index) => {
-              const Icon = amenity.icon;
+            <p className="text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-3">Features</p>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1]">
+              Everything you need.
+              <br />
+              <span className="text-neutral-400">Nothing you don't.</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 auto-rows-[minmax(200px,auto)]">
+            {bentoFeatures.map((f, i) => {
+              const Icon = f.icon;
               return (
                 <motion.div
-                  key={amenity.label}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={f.title}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="bg-white rounded-xl p-6 text-center border border-[hsl(var(--border))] hover:shadow-md hover:border-[hsl(var(--primary)/0.3)] transition-all duration-300"
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: i * 0.08, ease }}
+                  className={`${f.span} group relative rounded-2xl bg-white border border-black/5 p-6 md:p-8 hover:border-black/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-300 overflow-hidden`}
                 >
-                  <div className="flex justify-center mb-3">
-                    <Icon className="w-6 h-6 text-[hsl(var(--primary))]" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${f.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className="relative z-10 h-full flex flex-col">
+                    <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-5 h-5 text-neutral-600" />
+                    </div>
+                    <h3 className="text-base md:text-lg font-semibold tracking-tight mb-2">{f.title}</h3>
+                    <p className="text-sm text-neutral-500 leading-relaxed mt-auto">{f.desc}</p>
                   </div>
-                  <h3 className="font-[Jost] font-normal text-sm text-[hsl(var(--foreground))] mb-1.5">{amenity.label}</h3>
-                  <p className="font-[Jost] font-light text-xs text-[hsl(var(--muted-foreground))] leading-relaxed">{amenity.description}</p>
                 </motion.div>
               );
             })}
           </div>
+        </div>
+      </section>
 
-          {/* Доп. информация */}
-          <div className="mt-10 bg-white rounded-2xl border border-[hsl(var(--border))] p-6 md:p-8">
-            <h3 className="font-[Cormorant_Garamond] font-semibold text-xl text-[hsl(var(--foreground))] mb-4">Подробнее об отеле</h3>
-            <div className="grid md:grid-cols-3 gap-6 font-[Jost] font-light text-sm text-[hsl(var(--muted-foreground))] leading-relaxed">
-              <div>
-                <p className="font-normal text-[hsl(var(--foreground))] mb-2">Пляжный отдых</p>
-                <p>Полотенца, зонты и шезлонги — бесплатно. Тип пляжа — мелкая галька. Пляжной линии нет.</p>
-                <p className="font-normal text-[hsl(var(--foreground))] mt-4 mb-2">Парковка</p>
-                <p>Бесплатная открытая парковка по предварительному бронированию.</p>
-              </div>
-              <div>
-                <p className="font-normal text-[hsl(var(--foreground))] mb-2">Номера</p>
-                <p>Кондиционер, санузел, холодильник, стиралка, утюг, москитные сетки, диван-кровать, некурящие номера.</p>
-                <p className="font-normal text-[hsl(var(--foreground))] mt-4 mb-2">Для детей</p>
-                <p>Стульчик, площадка, детский бассейн, ТВ-каналы. Коляска и кроватки 0-3 года — нет.</p>
-              </div>
-              <div>
-                <p className="font-normal text-[hsl(var(--foreground))] mb-2">Важно</p>
-                <p>Заселение с детьми — да. Минимальный срок — 5 ночей. Доп. спальное место — нет. Тренажёрный зал, сауна — нет. Вес питомца до 5 кг.</p>
-              </div>
-            </div>
+      {/* ── HOW IT WORKS ──────────────────────────────────────────── */}
+      <section id="how" className="py-20 md:py-32 px-6 bg-white border-y border-black/5">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-14 md:mb-20"
+          >
+            <p className="text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-3">How it works</p>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1]">
+              Three steps.
+              <br />
+              <span className="text-neutral-400">Zero complexity.</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            {steps.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <motion.div
+                  key={s.num}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: i * 0.15, ease }}
+                  className="relative rounded-2xl bg-[#fafafa] border border-black/5 p-6 md:p-8 group hover:border-black/10 transition-all duration-300"
+                >
+                  <span className="text-[80px] md:text-[100px] font-bold text-black/[0.03] leading-none absolute top-4 right-6 select-none">
+                    {s.num}
+                  </span>
+                  <div className="w-10 h-10 rounded-xl bg-[#111] flex items-center justify-center mb-5">
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold tracking-tight mb-2">{s.title}</h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed">{s.desc}</p>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ── ГАЛЕРЕЯ / MARQUEE ────────────────────────────────────────────── */}
-      <section
-        ref={marqueeRef}
-        id="gallery"
-        className="bg-[#0C0C0C] pt-12 md:pt-16 pb-12 md:pb-16 overflow-x-clip"
-        style={{ width: "100vw", marginLeft: "calc(50% - 50vw)" }}
-      >
-        <div className="max-w-7xl mx-auto px-6 mb-8">
-          <h2 className="font-[Cormorant_Garamond] font-bold italic text-[48px] max-md:text-[36px] text-white leading-tight mb-2">Посмотрите сами.</h2>
-          <p className="font-[Jost] font-light text-white/60">Каждый уголок «Лесного» продуман для вашего уюта — ниже лента наших проектов.</p>
-        </div>
-        {/* Row 1 — движется ВПРАВО при скролле вниз — все фото уникальны */}
-        <div className="flex gap-3 mb-3" style={{ transform: `translateX(${marqueeOffset - 200}px)`, willChange: "transform" }}>
-          {row1.map((src, i) => (
-            <div key={`r1-${i}`} className="flex-shrink-0 w-[300px] h-[190px] md:w-[420px] md:h-[270px] rounded-2xl overflow-hidden">
-              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-        {/* Row 2 — движется ВЛЕВО — без повторов */}
-        <div className="flex gap-3" style={{ transform: `translateX(${-(marqueeOffset - 200)}px)`, willChange: "transform" }}>
-          {row2.map((src, i) => (
-            <div key={`r2-${i}`} className="flex-shrink-0 w-[300px] h-[190px] md:w-[420px] md:h-[270px] rounded-2xl overflow-hidden">
-              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── TESTIMONIALS ──────────────────────────────────────────── */}
+      <section className="py-20 md:py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-14 md:mb-20"
+          >
+            <p className="text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-3">Testimonials</p>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1]">
+              Loved by builders.
+            </h2>
+          </motion.div>
 
-      {/* ── РАСПОЛОЖЕНИЕ ─────────────────────────────────────────────────── */}
-      <section id="location" className="py-16 sm:py-24 bg-[hsl(var(--accent)/0.4)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 sm:gap-16 items-center">
-          <div className="bg-white rounded-3xl py-8 sm:h-96 flex flex-col items-center justify-center text-center gap-2 border border-[hsl(var(--border))] px-6">
-            <span className="text-3xl sm:text-4xl">📍</span>
-            <p className="font-[Cormorant_Garamond] italic text-lg sm:text-xl text-[hsl(var(--foreground))]">пер. Тельмана, 5</p>
-            <p className="font-[Jost] font-light text-xs sm:text-sm text-[hsl(var(--foreground))]">село Высокое, Сочи</p>
-            <a href="tel:+79184004090" className="mt-2 inline-flex items-center gap-2 bg-[hsl(var(--primary))] text-white font-[Jost] text-xs sm:text-sm px-4 sm:px-5 py-2 rounded-full">
-              <Phone className="w-4 h-4" /> +7 (918) 400-40-90
-            </a>
-            <p className="font-[Jost] font-light text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))] mt-1">Круглосуточно • Построить маршрут</p>
-            <p className="font-[Jost] font-light text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))] mt-2 max-w-[260px]">Точный адрес и карта отправляются после бронирования</p>
-          </div>
-          <div>
-            <p className="font-[Jost] font-light text-[10px] sm:text-xs tracking-[0.3em] uppercase text-[hsl(var(--muted-foreground))] mb-3 sm:mb-4">КАК ДОБРАТЬСЯ</p>
-            <h2 className="font-[Cormorant_Garamond] font-bold italic text-[36px] sm:text-[48px] text-[hsl(var(--foreground))] leading-tight mb-4 sm:mb-6">Где вы проснётесь.</h2>
-            <p className="font-[Jost] font-light text-sm sm:text-base leading-relaxed text-[hsl(var(--muted-foreground))] mb-6 sm:mb-8">
-              «Лесное» находится в пер. Тельмана, 5, село Высокое — тихий зелёный уголок Сочи в окружении леса. До пляжа с мелкой галькой — недалеко, магазины рядом, а городской шум остаётся далеко позади. Идеально, если хотите тишины, но оставаться близко к морю.
-            </p>
-            <ul className="space-y-2 sm:space-y-3">
-              {[
-                { emoji: "🏖️", place: "Пляж, мелкая галька", time: "полотенца/зонты — бесплатно" },
-                { emoji: "🅿️", place: "Парковка открытая", time: "бесплатно, по брони" },
-                { emoji: "🍖", place: "Мангальная зона", time: "бесплатно" },
-                { emoji: "🏡", place: "Сад и виноградник", time: "на территории" },
-                { emoji: "🐾", place: "С питомцами", time: "до 5 кг, платно" },
-                { emoji: "⏰", place: "Заезд 14:00 / Выезд 12:00", time: "круглосуточно" },
-              ].map((item) => (
-                <li key={item.place} className="flex items-center gap-2 sm:gap-3">
-                  <span className="text-base sm:text-lg">{item.emoji}</span>
-                  <span className="font-[Jost] font-light text-xs sm:text-sm text-[hsl(var(--foreground))]">{item.place}</span>
-                  <span className="ml-auto font-[Jost] font-light text-[10px] sm:text-xs text-[hsl(var(--muted-foreground))] whitespace-nowrap">{item.time}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6 sm:mt-8 flex gap-3">
-              <a href="tel:+79184004090" className="font-[Jost] text-xs sm:text-sm text-[hsl(var(--primary))] underline underline-offset-4">Показать телефон</a>
-              <span className="text-[hsl(var(--border))]">|</span>
-              <a href="#enquiry" className="font-[Jost] text-xs sm:text-sm text-[hsl(var(--primary))] underline underline-offset-4">Построить маршрут</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── ЦЕНЫ ─────────────────────────────────────────────────────────── */}
-      <section id="rates" className="py-16 sm:py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <h2 className="font-[Cormorant_Garamond] font-bold italic text-[36px] sm:text-[48px] text-[hsl(var(--foreground))] leading-tight mb-4">Цены и бронирование.</h2>
-          <p className="font-[Jost] font-light text-[hsl(var(--muted-foreground))] mb-8 sm:mb-12 text-sm sm:text-base leading-relaxed">
-            Всего 5 номеров — бронируйте заранее. Оплата картой, обязательный депозит 6000 ₽, уборка 2500 ₽. Минимальный срок бронирования — 5 ночей. Заезд в 14:00, выезд в 12:00.
-          </p>
-          <div className="border border-[hsl(var(--border))] rounded-2xl overflow-hidden mb-6 sm:mb-8">
-            {[
-              { season: "Низкий сезон", months: "Январь – март, ноябрь", price: "от 2500 ₽", unit: "/ ночь" },
-              { season: "Средний сезон", months: "Апрель – июнь, сентябрь – октябрь", price: "от 3500 ₽", unit: "/ ночь" },
-              { season: "Высокий сезон", months: "Июль – август", price: "от 5500 ₽", unit: "/ ночь" },
-              { season: "Праздники и выходные", months: "Мин. 5 ночей", price: "от 6500 ₽", unit: "/ ночь", highlight: true },
-            ].map((row) => (
-              <div
-                key={row.season}
-                className={`flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-8 py-4 sm:py-6 border-b border-[hsl(var(--border))] last:border-b-0 gap-1 sm:gap-4 ${row.highlight ? "bg-[hsl(var(--accent)/0.3)]" : ""}`}
-              >
-                <div>
-                  <p className="font-[Cormorant_Garamond] font-semibold text-lg sm:text-xl text-[hsl(var(--foreground))]">{row.season}</p>
-                  <p className="font-[Jost] font-light text-xs sm:text-sm text-[hsl(var(--muted-foreground))] mt-0.5">{row.months}</p>
-                </div>
-                <div className="text-left sm:text-right shrink-0">
-                  <span className="font-[Cormorant_Garamond] font-bold italic text-2xl sm:text-3xl text-[hsl(var(--primary))]">{row.price}</span>
-                  <span className="font-[Jost] font-light text-xs sm:text-sm text-[hsl(var(--muted-foreground))] ml-1">{row.unit}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="bg-[hsl(var(--muted))] rounded-xl p-5 font-[Jost] font-light text-sm text-[hsl(var(--muted-foreground))] leading-relaxed mb-10">
-            <p><b className="font-normal text-[hsl(var(--foreground))]">Депозит:</b> 6000 ₽ (возвращается). <b className="font-normal text-[hsl(var(--foreground))]">Уборка:</b> 2500 ₽. <b className="font-normal text-[hsl(var(--foreground))]">Тип:</b> бунгало, гостевой дом. Постройка 2013, реконструкция 2021. Трансфер — нет. Питание — без питания.</p>
-            <p className="mt-2">Дополнительное спальное место — нет. Шезлонги и зонты — бесплатно. Мангальная зона — бесплатно.</p>
-          </div>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-            <button
-              onClick={() => {
-                document.getElementById("enquiry")?.scrollIntoView({ behavior: "smooth" });
-                setToast("Пролистайте вниз и оставьте заявку — проверим даты прямо сейчас.");
-              }}
-              className="bg-[hsl(var(--primary))] text-white font-[Jost] font-normal px-8 py-3 rounded-full text-sm sm:text-base hover:opacity-90 transition-opacity"
-            >
-              Проверить наличие
-            </button>
-            <button
-              onClick={() => document.getElementById("enquiry")?.scrollIntoView({ behavior: "smooth" })}
-              className="border border-[hsl(var(--primary))] text-[hsl(var(--primary))] font-[Jost] font-normal px-8 py-3 rounded-full text-sm sm:text-base hover:bg-[hsl(var(--accent)/0.3)] transition-colors"
-            >
-              Оставить заявку
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── ОТЗЫВЫ ───────────────────────────────────────────────────────── */}
-      <section id="reviews" className="py-16 sm:py-24 bg-[hsl(var(--muted))]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h2 className="font-[Cormorant_Garamond] font-bold italic text-[36px] sm:text-[48px] text-[hsl(var(--foreground))] leading-tight text-center mb-8 sm:mb-14">Что говорят гости.</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            {reviews.map((review, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+            {testimonials.map((t, i) => (
               <motion.div
-                key={review.reviewer}
-                initial={{ opacity: 0, y: 20 }}
+                key={t.author}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
-                className="bg-white rounded-2xl p-5 sm:p-8 shadow-sm border border-[hsl(var(--border))]"
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease }}
+                className="rounded-2xl bg-white border border-black/5 p-6 md:p-8 hover:border-black/10 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-300"
               >
-                <div className="flex gap-1 mb-3 sm:mb-5">
-                  {[...Array(review.stars)].map((_, s) => (
-                    <Star key={s} className="w-4 h-4 fill-[hsl(var(--accent))] text-[hsl(var(--accent))]" />
+                <div className="flex gap-0.5 mb-4">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-[#111] text-[#111]" />
                   ))}
                 </div>
-                <p className="font-[Jost] font-light italic text-sm sm:text-base text-[hsl(var(--foreground))] leading-relaxed mb-4 sm:mb-6">&ldquo;{review.quote}&rdquo;</p>
-                <div className="border-t border-[hsl(var(--border))] pt-3 sm:pt-4">
-                  <p className="font-[Jost] font-normal text-sm text-[hsl(var(--foreground))]">{review.reviewer}</p>
-                  <p className="font-[Jost] font-light text-xs text-[hsl(var(--muted-foreground))] mt-0.5">
-                    {review.context} · {review.date}
-                  </p>
+                <p className="text-sm text-neutral-600 leading-relaxed mb-6 italic">&ldquo;{t.quote}&rdquo;</p>
+                <div>
+                  <p className="text-sm font-semibold tracking-tight">{t.author}</p>
+                  <p className="text-[12px] text-neutral-400">{t.role}</p>
                 </div>
               </motion.div>
             ))}
@@ -680,166 +531,231 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── ЗАЯВКА ───────────────────────────────────────────────────────── */}
-      <section id="enquiry" className="py-16 sm:py-24 bg-[hsl(var(--accent)/0.3)]">
-        <div className="max-w-xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="font-[Cormorant_Garamond] font-bold italic text-[36px] sm:text-[48px] text-[hsl(var(--foreground))] leading-tight mb-3 sm:mb-4">Спланируйте отдых.</h2>
-          <p className="font-[Jost] font-light text-sm sm:text-base text-[hsl(var(--muted-foreground))] leading-relaxed mb-2">
-            Расскажите, что планируете, и мы ответим в течение 24 часов. Любим знать повод — день рождения, семейный сбор или просто долгожданный отпуск.
-          </p>
-          <p className="font-[Jost] font-normal text-xs sm:text-sm text-[hsl(var(--foreground))] mb-6 sm:mb-8 flex items-center justify-center gap-2">
-            <Phone className="w-4 h-4" /> <a href="tel:+79184004090" className="underline underline-offset-4">+7 (918) 400-40-90</a> • Круглосуточно
-          </p>
-          <form onSubmit={handleEnquirySubmit} className="text-left space-y-5">
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_subject" value="Новая заявка — Лесное" />
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Имя</label>
-              <input
-                type="text"
-                name="Имя"
-                required
-                placeholder="Ваше имя"
-                className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white"
-              />
-            </div>
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Email</label>
-              <input
-                type="email"
-                name="Email"
-                required
-                placeholder="hello@yourname.ru"
-                className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white"
-              />
-            </div>
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Телефон</label>
-              <input
-                type="tel"
-                name="Телефон"
-                placeholder="+7 (918) 400-40-90"
-                className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Дата заезда</label>
-                <input
-                  type="date"
-                  name="Дата заезда"
-                  className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white"
-                />
-              </div>
-              <div>
-                <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Дата выезда</label>
-                <input
-                  type="date"
-                  name="Дата выезда"
-                  className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Количество гостей</label>
-              <select name="Гостей" className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white appearance-none">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                  <option key={n} value={`${n} гостей`}>{n} гостей</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Откуда узнали о нас?</label>
-              <select name="Источник" className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white appearance-none">
-                <option>Авито / Суточно.ру</option>
-                <option>Instagram</option>
-                <option>Сарафан / друзья</option>
-                <option>Поиск Google / Яндекс</option>
-                <option>Гид по Сочи</option>
-                <option>Другое</option>
-              </select>
-            </div>
-            <div>
-              <label className="font-[Jost] font-light text-xs tracking-[0.2em] uppercase text-[hsl(var(--muted-foreground))] block mb-1.5">Расскажите о поездке (необязательно)</label>
-              <textarea
-                rows={4}
-                name="Сообщение"
-                placeholder="Это особый повод? Едете с детьми или питомцем? Есть вопросы по дому или району?"
-                className="w-full border border-[hsl(var(--border))] rounded-lg px-4 py-3 font-[Jost] font-light text-sm focus:outline-none focus:border-[hsl(var(--primary))] transition-colors bg-white resize-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-[hsl(var(--primary))] text-white font-[Jost] font-normal text-base py-4 rounded-full hover:opacity-90 transition-opacity mt-2"
-            >
-              {enquirySent ? "Заявка отправлена ✓" : "Отправить заявку"}
-            </button>
-            <p className="font-[Jost] font-light text-xs text-center text-[hsl(var(--muted-foreground))] mt-3">Нажимая, вы соглашаетесь на обработку данных. Ответим круглосуточно.</p>
-          </form>
+      {/* ── PRICING ────────────────────────────────────────────────── */}
+      <section id="pricing" className="py-20 md:py-32 px-6 bg-white border-y border-black/5">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-14 md:mb-20"
+          >
+            <p className="text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-3">Pricing</p>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1]">
+              Simple, transparent.
+              <br />
+              <span className="text-neutral-400">No surprises.</span>
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 items-start">
+            {plans.map((p, i) => (
+              <motion.div
+                key={p.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease }}
+                className={`rounded-2xl p-6 md:p-8 transition-all duration-300 ${
+                  p.highlighted
+                    ? "bg-[#111] text-white border border-transparent shadow-xl shadow-black/10 scale-[1.02]"
+                    : "bg-[#fafafa] border border-black/5 hover:border-black/10"
+                }`}
+              >
+                <p
+                  className={`text-[12px] uppercase tracking-[0.15em] mb-3 ${
+                    p.highlighted ? "text-neutral-400" : "text-neutral-400"
+                  }`}
+                >
+                  {p.name}
+                </p>
+                <div className="flex items-baseline gap-1 mb-2">
+                  <span className="text-4xl font-semibold tracking-tight">{p.price}</span>
+                  {p.period && (
+                    <span className={`text-sm ${p.highlighted ? "text-neutral-400" : "text-neutral-400"}`}>
+                      {p.period}
+                    </span>
+                  )}
+                </div>
+                <p className={`text-sm mb-6 ${p.highlighted ? "text-neutral-400" : "text-neutral-500"}`}>{p.desc}</p>
+                <ul className="space-y-2.5 mb-8">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm">
+                      <Check
+                        className={`w-4 h-4 mt-0.5 shrink-0 ${
+                          p.highlighted ? "text-emerald-400" : "text-[#111]"
+                        }`}
+                      />
+                      <span className={p.highlighted ? "text-neutral-300" : "text-neutral-600"}>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#"
+                  className={`inline-flex items-center justify-center gap-2 w-full text-sm font-medium py-3 rounded-full transition-all duration-200 ${
+                    p.highlighted
+                      ? "bg-white text-[#111] hover:bg-neutral-100"
+                      : "bg-[#111] text-white hover:bg-black/80"
+                  }`}
+                >
+                  {p.cta}
+                  <ChevronRight className="w-4 h-4" />
+                </a>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── ФУТЕР ────────────────────────────────────────────────────────── */}
-      <footer className="bg-[hsl(var(--foreground))] text-[hsl(var(--accent))] py-16">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 border-b border-white/10">
-            <div className="max-w-xs">
-              <p className="font-[Cormorant_Garamond] font-bold italic text-[hsl(var(--accent))] text-3xl mb-2">ЛЕСНОЕ</p>
-              <p className="font-[Jost] font-light text-sm text-white/50 leading-relaxed">Где время замирает.</p>
-              <p className="font-[Jost] font-light text-sm text-white/40 mt-4">Бунгало и гостевой дом в селе Высокое. 5 номеров, сад и виноградник. Работаем круглосуточно.</p>
-              <p className="font-[Jost] font-light text-sm text-white/50 mt-3 flex items-center gap-2"><MapPin className="w-4 h-4" /> пер. Тельмана, 5, село Высокое</p>
-              <p className="font-[Jost] font-light text-sm text-white/50 flex items-center gap-2"><Phone className="w-4 h-4" /> <a href="tel:+79184004090" className="hover:text-[hsl(var(--accent))]">+7 (918) 400-40-90</a></p>
-              <p className="font-[Jost] font-light text-xs text-white/40 flex items-center gap-2"><Clock className="w-3 h-3" /> Круглосуточно • Заезд 14:00 / Выезд 12:00</p>
-            </div>
-            <nav className="flex flex-wrap gap-x-10 gap-y-3">
-              {[
-                { label: "О доме", href: "#house" },
-                { label: "Удобства", href: "#amenities" },
-                { label: "Галерея", href: "#gallery" },
-                { label: "Как добраться", href: "#location" },
-                { label: "Отзывы", href: "#reviews" },
-                { label: "Заявка", href: "#enquiry" },
-              ].map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="font-[Jost] font-light text-sm text-white/60 hover:text-[hsl(var(--accent))] transition-colors"
+      {/* ── FAQ ────────────────────────────────────────────────────── */}
+      <section id="faq" className="py-20 md:py-32 px-6">
+        <div className="max-w-3xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-14 md:mb-20"
+          >
+            <p className="text-[11px] text-neutral-400 uppercase tracking-[0.2em] mb-3">FAQ</p>
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1]">
+              Questions?
+              <br />
+              <span className="text-neutral-400">Answered.</span>
+            </h2>
+          </motion.div>
+
+          <div className="space-y-0">
+            {faq.map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ duration: 0.5, delay: i * 0.06, ease }}
+                className="border-b border-black/5"
+              >
+                <button
+                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between py-5 text-left group"
                 >
-                  {link.label}
-                </a>
+                  <span className="text-sm md:text-base font-medium pr-4 group-hover:text-neutral-600 transition-colors">
+                    {item.q}
+                  </span>
+                  <div
+                    className={`w-6 h-6 rounded-full border border-black/10 flex items-center justify-center shrink-0 transition-transform duration-300 ${
+                      activeFaq === i ? "rotate-45" : ""
+                    }`}
+                  >
+                    <span className="text-neutral-400 text-lg leading-none">+</span>
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {activeFaq === i && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm text-neutral-500 leading-relaxed pb-5">{item.a}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ────────────────────────────────────────────────────── */}
+      <section className="py-20 md:py-32 px-6 bg-white border-y border-black/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, ease }}
+          >
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-[1.1] mb-6">
+              Ready to build
+              <br />
+              <span className="text-neutral-400">something great?</span>
+            </h2>
+            <p className="text-neutral-500 text-base md:text-lg max-w-lg mx-auto mb-10 leading-relaxed">
+              Join thousands of teams shipping faster with Vortex. Start free, scale without limits.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 bg-[#111] text-white text-sm font-medium px-8 py-3.5 rounded-full hover:bg-black/80 transition-all duration-200 hover:shadow-lg hover:shadow-black/10"
+              >
+                Start building
+                <MoveRight className="w-4 h-4" />
+              </a>
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-[#111] transition-colors"
+              >
+                Talk to sales
+                <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── FOOTER ─────────────────────────────────────────────────── */}
+      <footer className="py-10 md:py-14 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-10 pb-8 border-b border-black/5">
+            <div>
+              <a href="#" className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 bg-[#111] rounded-lg flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-white" />
+                </div>
+                <span className="font-semibold text-base tracking-tight">Vortex</span>
+              </a>
+              <p className="text-[13px] text-neutral-400 max-w-xs leading-relaxed">
+                The modern infrastructure platform for teams who demand performance.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-12 gap-y-8">
+              {[
+                { title: "Product", links: ["Features", "Pricing", "Changelog", "Docs"] },
+                { title: "Company", links: ["About", "Blog", "Careers", "Contact"] },
+                { title: "Resources", links: ["Community", "Help Center", "Status", "Security"] },
+                { title: "Legal", links: ["Privacy", "Terms", "Cookie Policy"] },
+              ].map((col) => (
+                <div key={col.title}>
+                  <p className="text-[11px] uppercase tracking-[0.15em] text-neutral-400 mb-3">{col.title}</p>
+                  <ul className="space-y-2">
+                    {col.links.map((l) => (
+                      <li key={l}>
+                        <a href="#" className="text-[13px] text-neutral-500 hover:text-[#111] transition-colors">
+                          {l}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </nav>
+            </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8">
-            <p className="font-[Jost] font-light text-xs text-white/40 flex items-center gap-1"><MapPin className="w-3 h-3" /> пер. Тельмана, 5, село Высокое • <Phone className="w-3 h-3 ml-2" /> +7 (918) 400-40-90</p>
+            <p className="text-[12px] text-neutral-400">© 2026 Vortex. All rights reserved.</p>
             <div className="flex items-center gap-5">
-              <a href="#" aria-label="Instagram" className="text-white/40 hover:text-[hsl(var(--accent))] transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="tel:+79184004090" className="font-[Jost] font-light text-xs text-white/40 hover:text-[hsl(var(--accent))] transition-colors">
-                Показать телефон →
-              </a>
+              {["Twitter", "GitHub", "Discord"].map((s) => (
+                <a key={s} href="#" className="text-[12px] text-neutral-400 hover:text-[#111] transition-colors">
+                  {s}
+                </a>
+              ))}
             </div>
-            <p className="font-[Jost] font-light text-xs text-white/30">© 2025 Лесное. Все права защищены.</p>
           </div>
         </div>
       </footer>
-
-      {/* ── ТОСТ ─────────────────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] max-w-[90vw] w-max"
-          >
-            <div className="bg-[hsl(var(--foreground))] text-white font-[Jost] font-light text-sm px-6 py-4 rounded-full shadow-lg text-center leading-relaxed max-w-lg">
-              {toast}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
